@@ -6,8 +6,7 @@ import Navbar from "../components/Navbar";
 
 const Home = () => {
   return (
-    <div className="bg-red-600 h-screen">
-      {/* The rest of your homepage content goes here */}
+    <div className="bg-[#A367B1] h-screen">
       <div className="text-white text-center mt-10">
         <h1 className="text-4xl font-bold">Welcome to Our Fictional Bank</h1>
         <p className="mt-5">Your trusted partner in financial success.</p>
