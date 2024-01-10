@@ -15,9 +15,10 @@ const Register = () => {
       setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
     }
   };
+
   const { mutate } = useMutation({
     mutationFn: () => register(userInfo),
-    onSuccess: () => {
+    onSuccess: (data) => {
       navigator("/login");
     },
   });
