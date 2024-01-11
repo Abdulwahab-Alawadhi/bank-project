@@ -28,10 +28,44 @@ const Transactions = () => {
       },
     ]);
   }, []);
+  const handleWithdraw = () => {
+    const amount = parseFloat(prompt("Enter amount to withdraw:"));
+    if (amount > 0) {
+      const newTransaction = {
+        id: transactions.length + 1,
+        date: new Date().toISOString().split("T")[0],
+        description: "Withdrawal",
+        amount: -amount,
+        balance: transactions[transactions.length - 1].balance - amount,
+      };
+      setTransactions([...transactions, newTransaction]);
+    }
+  };
+  const handleAddMoney = () => {
+    const amount = parseFloat(prompt("Enter amount to add:"));
+    if (amount > 0) {
+      const newTransaction = {
+        id: transactions.length + 1,
+        date: new Date().toISOString().split("T")[0],
+        description: "Deposit",
+        amount: amount,
+        balance: transactions[transactions.length - 1].balance + amount,
+      };
+      setTransactions([...transactions, newTransaction]);
+    }
+  };
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>Bank Account Transactions</h2>
+      <div className="display flex">
+        <button className="btn btn-error" onClick={handleWithdraw}>
+          Withdraw
+        </button>
+        <button className="btn btn-success" onClick={handleAddMoney}>
+          Add Money
+        </button>
+      </div>
       <table
         style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}
       >
