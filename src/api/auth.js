@@ -31,10 +31,17 @@ const myUser = async () => {
   const { data } = await instance.get("/mini-project/api/auth/me");
   return data;
 };
+const withdraw = async (amount) => {
+  const { data } = await instance.put(
+    "/mini-project/api/transactions/withdraw",
+    amount
+  );
+  return data;
+};
 
 const getAllUsers = async () => {
   const { data } = await instance.get("/mini-project/api/auth/users");
   return data;
 };
 
-export { login, register, myUser, getAllUsers };
+export { login, register, myUser, getAllUsers, myBalance };
