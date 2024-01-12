@@ -1,8 +1,10 @@
 import axios from "axios";
 import { getToken } from "./storage";
 
+export const BASE_URL = "https://react-bank-project.eapi.joincoded.com";
+
 const instance = axios.create({
-  baseURL: "https://react-bank-project.eapi.joincoded.com",
+  baseURL: BASE_URL,
 });
 instance.interceptors.request.use((config) => {
   const token = getToken();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { myUser } from "../api/auth";
+import { BASE_URL } from "../api";
 
 const Profile = () => {
   const [user, setUser] = useState("");
@@ -39,7 +40,7 @@ const Profile = () => {
         {/* User Image */}
         {userImage && (
           <img
-            src={userImage}
+            src={`${BASE_URL}/${userImage}`}
             alt="User Avatar"
             className="w-24 h-24 rounded-full mx-auto mb-4"
           />
@@ -49,8 +50,8 @@ const Profile = () => {
         {editing ? (
           <div>
             <input
-              type="text"
-              placeholder="Enter new username"
+              type="file"
+              placeholder="Change the image"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -64,7 +65,7 @@ const Profile = () => {
               onClick={handleUsernameChange}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Edit Username
+              Change picture
             </button>
           </div>
         )}

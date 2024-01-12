@@ -1,12 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { getAllUsers } from "../api/auth";
+import { getAllUsers, transferMoney } from "../api/auth";
+import { BASE_URL } from "../api";
 
 const Transfer = () => {
-  const { data: users } = useQuery({
+  const { data: users, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: getAllUsers,
   });
+
+  const { mutate } = useMutation({
+    mutationKey: ["transfer"],
+    mutationFn: ({ amount, username }) => transferMoney(amount, username),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const transferMoney_ = (username) => {
+    const amount = parseFloat(prompt("Enter amount to add:"));
+    if (amount > 0) {
+      mutate({ amount, username });
+      // transferMoney(userTransfer.balance, amount);
+    }
+  };
 
   return (
     <div className="bg-gray-900 min-h-screen h-screen flex items-center justify-center absolute inset-0 z-[-1]">
@@ -19,10 +36,15 @@ const Transfer = () => {
               className="bg-gray-700 p-6 rounded-md flex flex-col items-center justify-center"
             >
               <img
-                src={user.image}
+                src={`${BASE_URL}/${user.image}`}
                 alt="User"
                 className="w-24 h-24 rounded-full mb-4"
               />
+              <div> {user.balance}</div>
+              <button onClick={() => transferMoney_(user.username)}>
+                {" "}
+                transfer{" "}
+              </button>
               <div className="text-center">
                 <h3 className="text-lg text-white font-semibold mb-2">
                   {user.name}

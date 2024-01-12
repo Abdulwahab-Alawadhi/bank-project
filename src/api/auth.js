@@ -31,17 +31,53 @@ const myUser = async () => {
   const { data } = await instance.get("/mini-project/api/auth/me");
   return data;
 };
-const withdraw = async (amount) => {
-  const { data } = await instance.put(
-    "/mini-project/api/transactions/withdraw",
-    amount
-  );
+
+const getTransactions = async () => {
+  const { data } = await instance.get("/mini-project/api/transactions/my");
   return data;
 };
 
+const withdraw = async (amount) => {
+  const { data } = await instance.put(
+    "/mini-project/api/transactions/withdraw",
+    { amount }
+  );
+  return data;
+};
+const deposit = async (amount) => {
+  const { data } = await instance.put(
+    "/mini-project/api/transactions/deposit",
+    { amount }
+  );
+  return data;
+};
+// const changeImage = async (amount) => {
+//   const { data } = await instance.put(
+//     "/mini-project/api/transactions/deposit",
+//     { amount }
+//   );
+//   return data;
+// };
 const getAllUsers = async () => {
   const { data } = await instance.get("/mini-project/api/auth/users");
   return data;
 };
+const transferMoney = async (amount, username) => {
+  alert(amount);
+  const { data } = await instance.put(
+    `/mini-project/api/transactions/transfer/` + username,
+    { amount }
+  );
+  return data;
+};
 
-export { login, register, myUser, getAllUsers, myBalance };
+export {
+  login,
+  register,
+  myUser,
+  getTransactions,
+  getAllUsers,
+  deposit,
+  withdraw,
+  transferMoney,
+};
