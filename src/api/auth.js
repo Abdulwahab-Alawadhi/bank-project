@@ -63,7 +63,7 @@ const getAllUsers = async () => {
   return data;
 };
 const transferMoney = async (amount, username) => {
-  alert(amount);
+  alert(`You've transfered $${amount} to ${username}`);
   const { data } = await instance.put(
     `/mini-project/api/transactions/transfer/` + username,
     { amount }
