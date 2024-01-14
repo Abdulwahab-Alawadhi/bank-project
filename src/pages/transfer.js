@@ -35,7 +35,7 @@ const Transfer = () => {
         <center>
           <input
             type="search"
-            id="form1"
+            id="date"
             className="form-control w-1/2 mx-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 gap-10"
             placeholder="Search"
             onChange={(e) => setQuery(e.target.value)}

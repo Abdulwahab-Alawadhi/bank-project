@@ -9,6 +9,7 @@ const Transactions = () => {
   const [sortDirection, setSortDirection] = useState("asc");
   const [sortedTransactions, setSortedTransactions] = useState([]);
   const [query, setQuery] = useState("");
+  const [money, setMoney] = useState("");
   //const formattedTimestamp = getCurrentFormattedTimestamp();
   const { mutate: performTransaction, isLoading: isTransactionLoading } =
     useMutation({
@@ -56,7 +57,7 @@ const Transactions = () => {
   });
 
   function timeDate(transaction) {
-    return dayjs(transaction.createdAt).format("DD-MM-YYYY         | HH:mm");
+    return dayjs(transaction.createdAt).format("DD-MM-YYYY  | HH:mm");
   }
 
   return (
@@ -65,15 +66,26 @@ const Transactions = () => {
       <div className="mb-4 text-4xl flex justify-center items-center gap-7">
         Total Balance: ${profileData?.balance?.toFixed(2)}
       </div>
-      <center>
-        <input
-          type="search"
-          id="form1"
-          className="form-control w-1/2 mx-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 gap-10"
-          placeholder="Search"
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </center>
+      <div className="gap-100">
+        <center>
+          <input
+            type="search"
+            id="form1"
+            className="form-control w-1/2 mx-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 gap-10"
+            placeholder="Search Date"
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </center>
+        <center>
+          <input
+            type="search"
+            id="form1"
+            className="form-control w-1/2 mx-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 gap-10"
+            placeholder="Search Amount"
+            onChange={(e) => setMoney(e.target.value)}
+          />
+        </center>
+      </div>
       <div className="flex justify-center gap-4 mb-4">
         <input
           type="number"
@@ -127,10 +139,9 @@ const Transactions = () => {
           </thead>
           <tbody>
             {sortedAndFilteredTransactions
-              ?.filter((transaction) =>
-                transaction.createdAt
-                  .toLowerCase()
-                  .includes(query.toLowerCase())
+              ?.filter((transaction) => timeDate(transaction).includes(query))
+              .filter((transaction) =>
+                transaction.amount.toString().includes(money)
               )
               .map((transaction) => (
                 <tr key={transaction} className="border-b">
