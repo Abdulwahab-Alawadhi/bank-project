@@ -5,13 +5,13 @@ import dayjs from "dayjs";
 
 const Transactions = () => {
   const [amount, setAmount] = useState("");
-  const [transactionType, setTransactionType] = useState("deposit"); // 'withdraw' or 'deposit'
+  const [transactionType, setTransactionType] = useState("deposit");
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortedTransactions, setSortedTransactions] = useState([]);
 
-  // const { data: users, refetch } = useQuery({
-  //   queryKey: ["users"],
-  //   queryFn: getAllUsers,
-  // });
+  const dayjs = require("dayjs");
 
+  //const formattedTimestamp = getCurrentFormattedTimestamp();
   const { mutate: performTransaction, isLoading: isTransactionLoading } =
     useMutation({
       mutationFn: (amount) =>
@@ -40,6 +40,22 @@ const Transactions = () => {
       setAmount("");
     }
   };
+
+  const toggleSortDirection = () => {
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
+  const sortedAndFilteredTransactions = [
+    ...(sortedTransactions.length > 0
+      ? sortedTransactions
+      : transactions || []),
+  ];
+
+  sortedAndFilteredTransactions.sort((a, b) => {
+    const dateA = dayjs(a.createdAt);
+    const dateB = dayjs(b.createdAt);
+    return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
   return (
     <div className="p-4">
@@ -83,17 +99,28 @@ const Transactions = () => {
             <tr>
               <th className="px-4 py-2">Transaction</th>
               <th className="px-4 py-2">Transaction ID</th>
-              <th className="px-4 py-2">Date & Time</th>
+              <th className="px-4 py-2">
+                Date & Time{" "}
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    toggleSortDirection();
+                    setSortedTransactions(sortedAndFilteredTransactions);
+                  }}
+                >
+                  {sortDirection === "asc" ? "▲" : "▼"}
+                </span>
+              </th>
               <th className="px-4 py-2">Amount</th>
             </tr>
           </thead>
           <tbody>
-            {transactions?.map((transaction) => (
+            {sortedAndFilteredTransactions.map((transaction) => (
               <tr key={transaction} className="border-b">
                 <td className="px-4 py-2">{transaction.type}</td>
-                <td className="px-4 py-2">{transaction.id}</td>
+                <td className="px-4 py-2">{transaction.to}</td>
                 <td className="px-4 py-2">
-                  {dayjs(transaction.date).format("YYYY-MM-DD HH:mm")}
+                  {dayjs(transaction.createdAt).format("YYYY-MM-DD HH:mm")}
                 </td>
                 <td
                   className={`px-4 py-2 ${
