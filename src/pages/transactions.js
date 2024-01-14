@@ -58,7 +58,7 @@ const Transactions = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Bank Account Transactions</h2>
-      <div className="mb-4">
+      <div className="mb-4 text-4xl flex justify-center items-center gap-7">
         Total Balance: ${profileData?.balance?.toFixed(2)}
       </div>
       <div className="flex justify-center gap-4 mb-4">
@@ -106,7 +106,7 @@ const Transactions = () => {
                     setSortedTransactions(sortedAndFilteredTransactions);
                   }}
                 >
-                  {sortDirection === "asc" ? "▲" : "▼"}
+                  {sortDirection === "asc" ? "▲Old" : "▼New"}
                 </span>
               </th>
               <th className="px-4 py-2">Amount</th>
