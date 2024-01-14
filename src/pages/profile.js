@@ -46,9 +46,6 @@ const Profile = () => {
             <h1 className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">
               {user}
             </h1>
-            <p className="mt-2 text-gray-500">
-              This is your profile page. You can edit your details here.
-            </p>
 
             <button
               onClick={handleImageChange}
@@ -65,10 +62,7 @@ const Profile = () => {
             </button>
 
             {/* Change Password NavLink */}
-            <NavLink
-              // to="/change-password" // Update this path to your actual change password route
-              className="mt-4 ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
+            <NavLink className="mt-4 ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
               Change Password
             </NavLink>
           </div>

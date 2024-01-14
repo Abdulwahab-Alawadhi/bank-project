@@ -9,8 +9,6 @@ const Transactions = () => {
   const [sortDirection, setSortDirection] = useState("asc");
   const [sortedTransactions, setSortedTransactions] = useState([]);
 
-  const dayjs = require("dayjs");
-
   //const formattedTimestamp = getCurrentFormattedTimestamp();
   const { mutate: performTransaction, isLoading: isTransactionLoading } =
     useMutation({
@@ -68,7 +66,7 @@ const Transactions = () => {
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
           placeholder="Enter amount"
         />
         <button
