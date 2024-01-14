@@ -8,7 +8,7 @@ const Transactions = () => {
   const [transactionType, setTransactionType] = useState("deposit");
   const [sortDirection, setSortDirection] = useState("asc");
   const [sortedTransactions, setSortedTransactions] = useState([]);
-
+  const [query, setQuery] = useState("");
   //const formattedTimestamp = getCurrentFormattedTimestamp();
   const { mutate: performTransaction, isLoading: isTransactionLoading } =
     useMutation({
@@ -55,12 +55,25 @@ const Transactions = () => {
     return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
   });
 
+  function timeDate(transaction) {
+    return dayjs(transaction.createdAt).format("DD-MM-YYYY         | HH:mm");
+  }
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Bank Account Transactions</h2>
       <div className="mb-4 text-4xl flex justify-center items-center gap-7">
         Total Balance: ${profileData?.balance?.toFixed(2)}
       </div>
+      <center>
+        <input
+          type="search"
+          id="form1"
+          className="form-control w-1/2 mx-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 gap-10"
+          placeholder="Search"
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </center>
       <div className="flex justify-center gap-4 mb-4">
         <input
           type="number"
@@ -113,30 +126,32 @@ const Transactions = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedAndFilteredTransactions.map((transaction) => (
-              <tr key={transaction} className="border-b">
-                <td className="px-4 py-2">{transaction.type}</td>
-                <td className="px-4 py-2">{transaction.to}</td>
-                <td className="px-4 py-2">
-                  {dayjs(transaction.createdAt).format(
-                    "DD-MM-YYYY         | HH:mm"
-                  )}
-                </td>
-                <td
-                  className={`px-4 py-2 ${
-                    transaction.type === "withdraw" ||
+            {sortedAndFilteredTransactions
+              ?.filter((transaction) =>
+                transaction.createdAt
+                  .toLowerCase()
+                  .includes(query.toLowerCase())
+              )
+              .map((transaction) => (
+                <tr key={transaction} className="border-b">
+                  <td className="px-4 py-2">{transaction.type}</td>
+                  <td className="px-4 py-2">{transaction.to}</td>
+                  <td className="px-4 py-2">{timeDate(transaction)}</td>
+                  <td
+                    className={`px-4 py-2 ${
+                      transaction.type === "withdraw" ||
+                      transaction.type === "transfer"
+                        ? "text-red-500"
+                        : "text-green-500"
+                    }`}
+                  >
+                    {(transaction.type === "withdraw" ||
                     transaction.type === "transfer"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  {(transaction.type === "withdraw" ||
-                  transaction.type === "transfer"
-                    ? "-"
-                    : "") + `$ ${transaction.amount?.toFixed(2)}`}
-                </td>
-              </tr>
-            ))}
+                      ? "-"
+                      : "") + `$ ${transaction.amount?.toFixed(2)}`}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
