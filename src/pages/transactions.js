@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deposit, getTransactions, myUser, withdraw } from "../api/auth";
+import {
+  deposit,
+  getAllUsers,
+  getTransactions,
+  myUser,
+  withdraw,
+} from "../api/auth";
 import dayjs from "dayjs";
 
 const Transactions = () => {
@@ -19,12 +25,17 @@ const Transactions = () => {
       onSuccess: () => {
         refetchTransactions();
         refechUser();
+        refechUsers();
       },
     });
+  const { data: allUsers, refetch: refechUsers } = useQuery({
+    queryFn: getAllUsers,
+    queryKey: ["profile"],
+  });
 
   const { data: profileData, refetch: refechUser } = useQuery({
     queryFn: myUser,
-    queryKey: ["profile"],
+    queryKey: ["my use"],
   });
 
   const { data: transactions, refetch: refetchTransactions } = useQuery({
@@ -57,9 +68,9 @@ const Transactions = () => {
   });
 
   function timeDate(transaction) {
-    return dayjs(transaction.createdAt).format("DD-MM-YYYY  | HH:mm");
+    return dayjs(transaction.createdAt).format("DD/MM/YYYY  | HH:mm");
   }
-
+  console.log(allUsers);
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Bank Account Transactions</h2>
@@ -122,6 +133,8 @@ const Transactions = () => {
             <tr>
               <th className="px-4 py-2">Transaction</th>
               <th className="px-4 py-2">Transaction ID</th>
+              <th className="px-4 py-2">From</th>
+              <th className="px-4 py-2">To</th>
               <th className="px-4 py-2">
                 Date & Time{" "}
                 <span
@@ -146,14 +159,31 @@ const Transactions = () => {
               .map((transaction) => (
                 <tr key={transaction} className="border-b">
                   <td className="px-4 py-2">{transaction.type}</td>
-                  <td className="px-4 py-2">{transaction.to}</td>
+                  <td className="px-4 py-2">{transaction._id}</td>
+                  <td className="px-4 py-2">
+                    {
+                      allUsers?.find((user) => {
+                        if (user._id == transaction.from) {
+                          return user;
+                        }
+                      }).username
+                    }
+                  </td>
+                  <td className="px-4 py-2">
+                    {
+                      allUsers?.find((user) => {
+                        if (user._id == transaction.to) {
+                          return user;
+                        }
+                      }).username
+                    }
+                  </td>
                   <td className="px-4 py-2">{timeDate(transaction)}</td>
                   <td
                     className={`px-4 py-2 ${
-                      transaction.type === "withdraw" ||
-                      transaction.type === "transfer"
-                        ? "text-red-500"
-                        : "text-green-500"
+                      transaction.type === "deposit"
+                        ? "text-green-500"
+                        : "text-red-500"
                     }`}
                   >
                     {(transaction.type === "withdraw" ||
