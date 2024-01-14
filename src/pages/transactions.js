@@ -120,7 +120,9 @@ const Transactions = () => {
                 <td className="px-4 py-2">{transaction.type}</td>
                 <td className="px-4 py-2">{transaction.to}</td>
                 <td className="px-4 py-2">
-                  {dayjs(transaction.createdAt).format("YYYY-MM-DD HH:mm")}
+                  {dayjs(transaction.createdAt).format(
+                    "DD-MM-YYYY         | HH:mm"
+                  )}
                 </td>
                 <td
                   className={`px-4 py-2 ${
