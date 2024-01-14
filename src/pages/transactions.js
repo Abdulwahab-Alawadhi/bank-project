@@ -1,93 +1,118 @@
+import React, { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
-import React, { useState, useEffect } from "react";
 import { deposit, getTransactions, myUser, withdraw } from "../api/auth";
+import dayjs from "dayjs";
 
 const Transactions = () => {
-  const { mutate: getDeposit } = useMutation({
-    mutationFn: (amount) => deposit(amount),
-    mutationKey: [`transactions`],
-    onSuccess: () => {
-      refetchTransactions();
-      refechUser();
-    },
-  });
+  const [amount, setAmount] = useState("");
+  const [transactionType, setTransactionType] = useState("deposit"); // 'withdraw' or 'deposit'
 
-  const { mutate: getWithdraw } = useMutation({
-    mutationFn: (amount) => withdraw(amount),
-    mutationKey: [`transactions`],
-    onSuccess: () => {
-      refetchTransactions();
-      refechUser();
-    },
-  });
+  // const { data: users, refetch } = useQuery({
+  //   queryKey: ["users"],
+  //   queryFn: getAllUsers,
+  // });
+
+  const { mutate: performTransaction, isLoading: isTransactionLoading } =
+    useMutation({
+      mutationFn: (amount) =>
+        transactionType === "deposit" ? deposit(amount) : withdraw(amount),
+      mutationKey: ["transactions"],
+      onSuccess: () => {
+        refetchTransactions();
+        refechUser();
+      },
+    });
 
   const { data: profileData, refetch: refechUser } = useQuery({
-    queryFn: () => myUser(),
-    queryKey: [`profile`],
+    queryFn: myUser,
+    queryKey: ["profile"],
   });
 
   const { data: transactions, refetch: refetchTransactions } = useQuery({
-    queryFn: () => getTransactions(),
-    queryKey: [`transactions`],
+    queryFn: getTransactions,
+    queryKey: ["transactions"],
   });
-  const handleWithdraw = () => {
-    const amount = parseFloat(prompt("Enter amount to withdraw:"));
-    if (amount > 0) {
-      getWithdraw(amount);
+
+  const handleTransaction = () => {
+    const numericAmount = parseFloat(amount);
+    if (numericAmount > 0) {
+      performTransaction(numericAmount);
+      setAmount("");
     }
   };
-
-  const handleAddMoney = () => {
-    const amount = parseFloat(prompt("Enter amount to add:"));
-    if (amount > 0) {
-      getDeposit(amount);
-    }
-  };
-
-  console.log(transactions);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Bank Account Transactions</h2>
-      <div> Total Balance: ${profileData?.balance?.toFixed(2)}</div>
-      <div className="flex justify-cen">
-        <button className="btn btn-error" onClick={handleWithdraw}>
+    <div className="p-4">
+      <h2 className="text-2xl font-semibold mb-4">Bank Account Transactions</h2>
+      <div className="mb-4">
+        Total Balance: ${profileData?.balance?.toFixed(2)}
+      </div>
+      <div className="flex justify-center gap-4 mb-4">
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Enter amount"
+        />
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={() => {
+            setTransactionType("withdraw");
+            handleTransaction();
+          }}
+          disabled={isTransactionLoading}
+        >
           Withdraw
         </button>
-        <button className="btn btn-success" onClick={handleAddMoney}>
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={() => {
+            setTransactionType("deposit");
+            handleTransaction();
+          }}
+          disabled={isTransactionLoading}
+        >
           Add Money
         </button>
       </div>
 
-      <table
-        style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}
-      >
-        <thead>
-          <tr>
-            <th>Transaction</th>
-            <th>Description</th>
-            <th>Amount</th>
-            {/* <th>Balance</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {transactions?.map((transaction) => (
-            <tr key={transaction.id}>
-              <td>{transaction.type}</td>
-              <td>{transaction.to}</td>
-              <td
-                style={{
-                  color: transaction?.type === "withdraw" ? "tomato" : "green",
-                }}
-              >
-                $ {transaction.amount?.toFixed(2)}
-              </td>
-              {/* <td>$ {profileData.balance?.toFixed(2)}</td> */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Transaction</th>
+              <th className="px-4 py-2">Transaction ID</th>
+              <th className="px-4 py-2">Date & Time</th>
+              <th className="px-4 py-2">Amount</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions?.map((transaction) => (
+              <tr key={transaction} className="border-b">
+                <td className="px-4 py-2">{transaction.type}</td>
+                <td className="px-4 py-2">{transaction.id}</td>
+                <td className="px-4 py-2">
+                  {dayjs(transaction.date).format("YYYY-MM-DD HH:mm")}
+                </td>
+                <td
+                  className={`px-4 py-2 ${
+                    transaction.type === "withdraw" ||
+                    transaction.type === "transfer"
+                      ? "text-red-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  {(transaction.type === "withdraw" ||
+                  transaction.type === "transfer"
+                    ? "-"
+                    : "") + `$ ${transaction.amount?.toFixed(2)}`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

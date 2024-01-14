@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { myUser } from "../api/auth";
 import { BASE_URL } from "../api";
+import { NavLink } from "react-router-dom"; // Assuming you're using react-router-dom for navigation
 
 const Profile = () => {
   const [user, setUser] = useState("");
-  const [userImage, setUserImage] = useState(""); // State for user image URL
-  const [newUsername, setNewUsername] = useState("");
+  const [userImage, setUserImage] = useState("");
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const Profile = () => {
       try {
         const data = await myUser();
         setUser(data.username);
-        setUserImage(data.image); // Update the state with the image URL
+        setUserImage(data.image);
       } catch (error) {
         console.log("Error fetching user data:", error);
       }
@@ -26,56 +26,52 @@ const Profile = () => {
     setEditing(!editing);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      setEditing(false); // Hide the text field when Enter is pressed
-    }
-  };
+  const handleImageChange = (e) => {};
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-yellow shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h1 className="text-xl font-semibold mb-4">Profile Page</h1>
-
-        {/* User Image */}
-        {userImage && (
-          <img
-            src={`${BASE_URL}/${userImage}`}
-            alt="User Avatar"
-            className="w-24 h-24 rounded-full mx-auto mb-4"
-          />
-        )}
-
-        <h2 className="text-lg mb-4">{user}</h2>
-        {editing ? (
-          <div>
-            <input
-              type="file"
-              placeholder="Change the image"
-              value={newUsername}
-              onChange={(e) => setNewUsername(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              autoFocus
+    <div className="min-h-screen bg-gray-100">
+      <div className="container mx-auto p-4">
+        <div className="md:flex bg-white shadow-lg rounded-lg overflow-hidden">
+          <div className="md:flex-shrink-0">
+            <img
+              src={`${BASE_URL}/${userImage}`}
+              alt="User Avatar"
+              className="h-48 w-full object-cover md:w-48"
             />
           </div>
-        ) : (
-          <div className="flex justify-center mb-4">
+          <div className="p-8">
+            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+              Profile
+            </div>
+            <h1 className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">
+              {user}
+            </h1>
+            <p className="mt-2 text-gray-500">
+              This is your profile page. You can edit your details here.
+            </p>
+
+            <button
+              onClick={handleImageChange}
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Change Image
+            </button>
+
             <button
               onClick={handleUsernameChange}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="mt-4 ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Change picture
+              Change Username
             </button>
+
+            {/* Change Password NavLink */}
+            <NavLink
+              // to="/change-password" // Update this path to your actual change password route
+              className="mt-4 ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Change Password
+            </NavLink>
           </div>
-        )}
-        <div className="flex justify-center">
-          <button
-            onClick={() => console.log("Change Password Clicked")}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Change Password
-          </button>
         </div>
       </div>
     </div>

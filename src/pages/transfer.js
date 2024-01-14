@@ -21,32 +21,37 @@ const Transfer = () => {
     const amount = parseFloat(prompt("Enter amount to add:"));
     if (amount > 0) {
       mutate({ amount, username });
-      // transferMoney(userTransfer.balance, amount);
     }
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen h-screen flex items-center justify-center absolute inset-0 z-[-1]">
-      <div className="max-w-[90%] overflow-scroll w-full px-6 py-8 bg-gray-800 rounded-md shadow-md max-h-[80%]">
-        <h2 className="text-3xl text-white font-semibold mb-6 ">Users</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+    <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+      <div className="max-w w-full px-6 py-8 bg-grey-900 rounded-md shadow-lg">
+        <h2 className="text-5xl text-white font-semibold mb-6">
+          Transfer to Users
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {users?.map((user) => (
             <div
               key={user.id}
-              className="bg-gray-700 p-6 rounded-md flex flex-col items-center justify-center"
+              className="bg-gray-700 p-6 rounded-md shadow flex flex-col items-center justify-center"
             >
               <img
                 src={`${BASE_URL}/${user.image}`}
                 alt="User"
                 className="w-24 h-24 rounded-full mb-4"
               />
-              <div> {user.balance}</div>
-              <button onClick={() => transferMoney_(user.username)}>
-                {" "}
-                transfer{" "}
+              <div className="text-white text-lg mb-2">
+                ${user.balance.toFixed(2)}
+              </div>
+              <button
+                onClick={() => transferMoney_(user.username)}
+                className="bg-green-500 hover:bg-green-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              >
+                Transfer
               </button>
-              <div className="text-center">
-                <h3 className="text-lg text-white font-semibold mb-2">
+              <div className="text-center mt-3">
+                <h3 className="text-lg text-white font-semibold mb-1">
                   {user.name}
                 </h3>
                 <p className="text-gray-300">{user.username}</p>
